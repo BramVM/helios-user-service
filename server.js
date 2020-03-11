@@ -31,6 +31,7 @@ const routes = require('./api/routes/playerRoutes');
 
 const whitelist = [
   'http://localhost:3000',
+  'https://projectheliosremake.herokuapp.com/'
 ];
 const corsOptions = {
   origin: function(origin, callback){
@@ -51,4 +52,4 @@ app.use(function(req, res) {
 
 app.listen(port);
 
-console.log('todo list RESTful API server started on: ' + port);
+console.log('RESTful API server started on: ' + port);
