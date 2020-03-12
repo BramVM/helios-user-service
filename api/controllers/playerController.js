@@ -27,6 +27,7 @@ exports.create_a_player = function(req, res) {
 };
 
 exports.read_active_player = function(req, res) {
+  console.log('requested active player');
   Player.findOne({identityProviderId:req.user.sub}, function(err, player) {
     if (err){
       res.send(err);
