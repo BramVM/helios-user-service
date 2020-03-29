@@ -73,6 +73,17 @@ exports.update_a_player = async function(req, res) {
   });
 };
 
+exports.update_players = async function(req, res) {
+  req.body.forEach(item => {
+    const player = inputMappers.mapPlayer(item)
+    Player.findOneAndUpdate({_id:player._id}, player, {new: true}, function(err, player) {
+      if (err)
+        res.send(err);
+      res.json(player);
+    });
+  });
+};
+
 // Player.remove({}).exec(function(){});
 exports.delete_a_player = function(req, res) {
   Player.remove({

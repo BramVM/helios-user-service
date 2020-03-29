@@ -169,6 +169,17 @@ exports.update_a_player = async function(req, res) {
   });
 };
 
+exports.update_players = async function(req, res) {
+  req.body.forEach(item => {
+    const player = inputMappers.mapPlayer(item)
+    Player.findOneAndUpdate({_id:player._id}, player, {new: true}, function(err, player) {
+      if (err)
+        res.send(err);
+      res.json(player);
+    });
+  });
+};
+
 // Player.remove({}).exec(function(){});
 exports.delete_a_player = function(req, res) {
   Player.remove({
@@ -278,10 +289,11 @@ module.exports = function(app) {
 	// playerController Routes
 	app.route('/players')
 		.get(playerController.list_all_players)
-    .post(playerController.create_a_player);
+    .post(playerController.create_a_player)
+    .patch(playerController.update_players);
 
   app.route('/active-player')
-  .get(playerController.read_active_player)
+    .get(playerController.read_active_player);
 
 	app.route('/players/:playerId')
 		.patch(playerController.update_a_player)
