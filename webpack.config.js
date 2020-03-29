@@ -1,8 +1,9 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
-module.exports = {
+config = {
     mode: "development",
     target: "node",
     entry: {
@@ -29,3 +30,20 @@ module.exports = {
       ]
     }
 }
+if(process && process.env){
+  config.plugins.push(new webpack.DefinePlugin({
+    'process.env': {
+      JWKSURI: JSON.stringify(process.env.JWKSURI),
+      PORT: JSON.stringify(process.env.PORT),
+      AUDIENCE: JSON.stringify(process.env.AUDIENCE),
+      ISSUER: JSON.stringify(process.env.ISSUER),
+      CONNECTIONSTRING: JSON.stringify(process.env.CONNECTIONSTRING)
+    }
+  }))
+}
+else {
+  config.plugins.push(new Dotenv({
+    path: path.resolve(__dirname, './.env')
+  }))
+}
+module.exports = config;
