@@ -20,7 +20,7 @@ const jwtCheck = jwt({
   issuer: process.env.ISSUER,
   algorithms: ['RS256']
 });
-
+console.log(process.env.CONNECTIONSTRING);
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.CONNECTIONSTRING);
 
@@ -31,7 +31,8 @@ const routes = require('./api/routes/playerRoutes');
 
 const whitelist = [
   'http://localhost:3000',
-  'https://projectheliosremake.herokuapp.com/'
+  'https://projectheliosremake.herokuapp.com/',
+  'https://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
   origin: function(origin, callback){
