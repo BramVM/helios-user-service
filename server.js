@@ -24,8 +24,6 @@ console.log(process.env.CONNECTIONSTRING);
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.CONNECTIONSTRING);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const routes = require('./api/routes/playerRoutes');
 
@@ -34,20 +32,21 @@ const whitelist = [
   'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
-  origin: function(origin, callback){
-      console.log(origin)
-      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-      callback(null, originIsWhitelisted);
-  },
+  // origin: function(origin, callback){
+  //     console.log(origin)
+  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+  //     callback(null, originIsWhitelisted);
+  // },
+  origin: '*',
   credentials: true,
   enablePreflight: true
 };
 app.use(cors(corsOptions));
 
 //app.use(cors({origin: 'http://localhost:3000'}));
-
 app.use(jwtCheck);
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 routes(app);
 
 app.use(function(req, res) {

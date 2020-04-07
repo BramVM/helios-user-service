@@ -336,29 +336,29 @@ console.log("mongodb+srv://Bram_69:el2cIflH6wSoi7CD@heliosusers-7l1bc.mongodb.ne
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://Bram_69:el2cIflH6wSoi7CD@heliosusers-7l1bc.mongodb.net/test?retryWrites=true&w=majority");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const routes = __webpack_require__(/*! ./api/routes/playerRoutes */ "./api/routes/playerRoutes.js");
 
 const whitelist = [
-  '*',
+  'http://localhost:3000',
   'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
-  origin: function(origin, callback){
-      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-      callback(null, originIsWhitelisted);
-  },
+  // origin: function(origin, callback){
+  //     console.log(origin)
+  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+  //     callback(null, originIsWhitelisted);
+  // },
+  origin: '*',
   credentials: true,
   enablePreflight: true
 };
 app.use(cors(corsOptions));
 
 //app.use(cors({origin: 'http://localhost:3000'}));
-
 app.use(jwtCheck);
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 routes(app);
 
 app.use(function(req, res) {
