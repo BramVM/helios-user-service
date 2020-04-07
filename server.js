@@ -29,21 +29,33 @@ app.use(bodyParser.json());
 
 const routes = require('./api/routes/playerRoutes');
 
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 const whitelist = [
-  '*',
   'http://localhost:3000',
-  'https://projectheliosremake.herokuapp.com/',
+  'https://projectheliosremake.herokuapp.com',
   'http://projecthelios.azurewebsites.net',
-  'https://projecthelios.azurewebsites.net',
-  'http://projecthelios.azurewebsites.net/'
 ];
 const corsOptions = {
-  // origin: function(origin, callback){
-  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-  //     callback(null, originIsWhitelisted);
-  // },
-  origin: '*',
-  credentials: true
+  origin: function(origin, callback){
+      console.log('origin')
+      console.log(origin)
+      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      //callback(null, originIsWhitelisted);
+      callback(null, true);
+  },
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Methods",
+    "Access-Control-Request-Headers"
+  ],
+  credentials: true,
+  enablePreflight: true
 };
 app.use(cors(corsOptions));
 
