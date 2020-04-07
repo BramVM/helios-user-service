@@ -344,7 +344,8 @@ const routes = __webpack_require__(/*! ./api/routes/playerRoutes */ "./api/route
 const whitelist = [
   'http://localhost:3000',
   'https://projectheliosremake.herokuapp.com/',
-  'https://projecthelios.azurewebsites.net'
+  'https://projecthelios.azurewebsites.net',
+  'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
   origin: function(origin, callback){
