@@ -37,23 +37,13 @@ app.use(function(req, res, next) {
 
 const whitelist = [
   'http://localhost:3000',
-  'https://projectheliosremake.herokuapp.com',
-  'http://projecthelios.azurewebsites.net',
+  'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
   origin: function(origin, callback){
-      console.log('origin')
-      console.log(origin)
       const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-      //callback(null, originIsWhitelisted);
-      callback(null, true);
+      callback(null, originIsWhitelisted);
   },
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Access-Control-Allow-Methods",
-    "Access-Control-Request-Headers"
-  ],
   credentials: true,
   enablePreflight: true
 };
