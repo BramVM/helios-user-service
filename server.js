@@ -30,6 +30,7 @@ app.use(bodyParser.json());
 const routes = require('./api/routes/playerRoutes');
 
 const whitelist = [
+  '*',
   'http://localhost:3000',
   'https://projectheliosremake.herokuapp.com/',
   'http://projecthelios.azurewebsites.net',
@@ -37,10 +38,11 @@ const whitelist = [
   'http://projecthelios.azurewebsites.net/'
 ];
 const corsOptions = {
-  origin: function(origin, callback){
-      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-      callback(null, originIsWhitelisted);
-  },
+  // origin: function(origin, callback){
+  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+  //     callback(null, originIsWhitelisted);
+  // },
+  origin: '*',
   credentials: true
 };
 app.use(cors(corsOptions));
