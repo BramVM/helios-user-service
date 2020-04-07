@@ -341,14 +341,8 @@ app.use(bodyParser.json());
 
 const routes = __webpack_require__(/*! ./api/routes/playerRoutes */ "./api/routes/playerRoutes.js");
 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
 const whitelist = [
-  'http://localhost:3000',
+  '*',
   'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
@@ -360,6 +354,8 @@ const corsOptions = {
   enablePreflight: true
 };
 app.use(cors(corsOptions));
+
+//app.use(cors({origin: 'http://localhost:3000'}));
 
 app.use(jwtCheck);
 

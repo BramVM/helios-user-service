@@ -29,18 +29,13 @@ app.use(bodyParser.json());
 
 const routes = require('./api/routes/playerRoutes');
 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
 const whitelist = [
   'http://localhost:3000',
   'http://projecthelios.azurewebsites.net'
 ];
 const corsOptions = {
   origin: function(origin, callback){
+      console.log(origin)
       const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
       callback(null, originIsWhitelisted);
   },
@@ -48,6 +43,8 @@ const corsOptions = {
   enablePreflight: true
 };
 app.use(cors(corsOptions));
+
+//app.use(cors({origin: 'http://localhost:3000'}));
 
 app.use(jwtCheck);
 
