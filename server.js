@@ -47,14 +47,17 @@ const corsOptions = {
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000,http://projecthelios.azurewebsites.net,http://bram-lab.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Referer, User-Agent');
   next();
 });
 app.use(jwtCheck);
 //app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.options('/active-player', cors()) // enable pre-flight request for DELETE request
+app.get('/active-player', cors(), function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
 routes(app);
 
 app.use(function(req, res) {
