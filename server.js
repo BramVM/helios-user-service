@@ -54,10 +54,10 @@ app.use(jwtCheck);
 //app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.options('/active-player', cors()) // enable pre-flight request for DELETE request
-app.get('/active-player', cors(), function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
-})
+// app.options('/active-player', cors()) // enable pre-flight request for DELETE request
+// app.get('/active-player', cors(), function (req, res, next) {
+//   res.json({msg: 'This is CORS-enabled for all origins!'})
+// })
 routes(app);
 
 app.use(function(req, res) {
