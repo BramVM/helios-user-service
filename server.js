@@ -29,15 +29,15 @@ const routes = require('./api/routes/playerRoutes');
 
 const whitelist = [
   'http://localhost:3000',
-  'http://projecthelios.azurewebsites.net'
+  'http://projecthelios.azurewebsites.net',
+  'http://bram-lab.com'
 ];
 const corsOptions = {
-  // origin: function(origin, callback){
-  //     console.log(origin)
-  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-  //     callback(null, originIsWhitelisted);
-  // },
-  origin: '*',
+  origin: function(origin, callback){
+      console.log(origin)
+      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      callback(null, originIsWhitelisted);
+  },
   credentials: true,
   enablePreflight: true
 };
@@ -47,7 +47,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
   next();
