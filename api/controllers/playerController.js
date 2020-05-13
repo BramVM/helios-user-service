@@ -12,6 +12,7 @@ exports.list_all_players = function(req, res) {
   Player.find({}, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -22,6 +23,7 @@ exports.create_a_player = function(req, res) {
   new_player.save(function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -34,6 +36,7 @@ exports.read_active_player = function(req, res) {
     }
     if (player){
       console.log(player)
+      res.setHeader('Content-Type', 'application/json')
       res.json(player);
     }
     else {
@@ -58,6 +61,7 @@ exports.read_active_player = function(req, res) {
           console.log(err)
           res.send(err);
         }
+        res.setHeader('Content-Type', 'application/json')
         res.json(player);
       });
     }
@@ -69,6 +73,7 @@ exports.update_a_player = async function(req, res) {
   Player.findOneAndUpdate({_id:req.params.playerId}, player, {new: true}, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -79,6 +84,7 @@ exports.update_players = async function(req, res) {
     Player.findOneAndUpdate({_id:player._id}, player, {new: true}, function(err, player) {
       if (err)
         res.send(err);
+      res.setHeader('Content-Type', 'application/json')
       res.json(player);
     });
   });
@@ -91,6 +97,7 @@ exports.delete_a_player = function(req, res) {
   }, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json({ message: 'Player successfully deleted' });
   });
 };
