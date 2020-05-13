@@ -108,6 +108,7 @@ exports.list_all_players = function(req, res) {
   Player.find({}, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -118,6 +119,7 @@ exports.create_a_player = function(req, res) {
   new_player.save(function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -130,6 +132,7 @@ exports.read_active_player = function(req, res) {
     }
     if (player){
       console.log(player)
+      res.setHeader('Content-Type', 'application/json')
       res.json(player);
     }
     else {
@@ -154,6 +157,7 @@ exports.read_active_player = function(req, res) {
           console.log(err)
           res.send(err);
         }
+        res.setHeader('Content-Type', 'application/json')
         res.json(player);
       });
     }
@@ -165,6 +169,7 @@ exports.update_a_player = async function(req, res) {
   Player.findOneAndUpdate({_id:req.params.playerId}, player, {new: true}, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json(player);
   });
 };
@@ -175,6 +180,7 @@ exports.update_players = async function(req, res) {
     Player.findOneAndUpdate({_id:player._id}, player, {new: true}, function(err, player) {
       if (err)
         res.send(err);
+      res.setHeader('Content-Type', 'application/json')
       res.json(player);
     });
   });
@@ -187,6 +193,7 @@ exports.delete_a_player = function(req, res) {
   }, function(err, player) {
     if (err)
       res.send(err);
+    res.setHeader('Content-Type', 'application/json')
     res.json({ message: 'Player successfully deleted' });
   });
 };
@@ -341,29 +348,29 @@ const routes = __webpack_require__(/*! ./api/routes/playerRoutes */ "./api/route
 
 const whitelist = [
   'http://localhost:3000',
-  'http://projecthelios.azurewebsites.net'
+  'http://projecthelios.azurewebsites.net',
+  'http://bram-lab.com'
 ];
 const corsOptions = {
-  // origin: function(origin, callback){
-  //     console.log(origin)
-  //     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-  //     callback(null, originIsWhitelisted);
-  // },
-  origin: '*',
+  origin: function(origin, callback){
+      console.log(origin)
+      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      callback(null, originIsWhitelisted);
+  },
   credentials: true,
   enablePreflight: true
 };
 //app.use(cors({origin: 'http://localhost:3000'}));
 app.use(jwtCheck);
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(function(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
+//   next();
+// });
 routes(app);
 
 app.use(function(req, res) {
