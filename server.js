@@ -43,17 +43,18 @@ const corsOptions = {
   enablePreflight: true
 };
 //app.use(cors({origin: 'http://localhost:3000'}));
-app.use(cors())
+//app.use(cors())
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000,http://projecthelios.azurewebsites.net,http://bram-lab.com');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+  next();
+});
 app.use(jwtCheck);
 //app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(function(req, res, next) {
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000,http://projecthelios.azurewebsites.net,http://bram-lab.com');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-//   next();
-// });
+
 routes(app);
 
 app.use(function(req, res) {
