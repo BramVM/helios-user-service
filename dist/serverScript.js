@@ -318,6 +318,7 @@ module.exports = function(app) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! dotenv */ "dotenv").config();
+var cors = __webpack_require__(/*! cors */ "cors")
 const express = __webpack_require__(/*! express */ "express"),
   app = express(),  
   jwt = __webpack_require__(/*! express-jwt */ "express-jwt"),
@@ -326,7 +327,7 @@ const express = __webpack_require__(/*! express */ "express"),
   mongoose = __webpack_require__(/*! mongoose */ "mongoose"),
   Player = __webpack_require__(/*! ./api/models/playerModel */ "./api/models/playerModel.js"),
   bodyParser = __webpack_require__(/*! body-parser */ "body-parser");
-  const cors=__webpack_require__(/*! cors */ "cors");
+
 
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -360,17 +361,20 @@ const corsOptions = {
   credentials: true,
   enablePreflight: true
 };
-//app.use(cors({origin: 'http://localhost:3000'}));
+app.use(function(req, res, next) {
+  let allowedOrigins = ["http://localhost:3000", "http://projecthelios.azurewebsites.net", "http://bram-lab.com", "https://projecthelios.azurewebsites.net", "https://bram-lab.com"]
+  let origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin); // restrict it to the required domain
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Referer, User-Agent');
+  next();
+});
+app.options('*', cors())
 app.use(jwtCheck);
-app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(function(req, res, next) {
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-//   next();
-// });
 routes(app);
 
 app.use(function(req, res) {
