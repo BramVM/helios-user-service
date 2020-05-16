@@ -100,104 +100,127 @@ const mongoose = __webpack_require__(/*! mongoose */ "mongoose"),
   Player = mongoose.model('Players');
 
 mongoose.set('useFindAndModify', false);
-  //playerRepository = require('../repositries/playerRepository');
+const startingPosition = __webpack_require__(/*! ../helpers/startingPosition */ "./api/helpers/startingPosition.js");
 
-
-
-exports.list_all_players = function(req, res) {
-  Player.find({}, function(err, player) {
+exports.list_all_players = function (req, res) {
+  Player.find({}, function (err, player) {
     if (err)
       res.send(err);
-    res.setHeader('Content-Type', 'application/json')
-    res.json(player);
+    else
+      res.json(player);
   });
 };
 
-
-exports.create_a_player = function(req, res) {
+exports.create_a_player = function (req, res) {
   var new_player = new Player(req.body);
-  new_player.save(function(err, player) {
+  new_player.save(function (err, player) {
     if (err)
       res.send(err);
-    res.setHeader('Content-Type', 'application/json')
-    res.json(player);
+    else
+      res.json(player);
   });
 };
 
-exports.read_active_player = function(req, res) {
+exports.read_active_player = function (req, res) {
   console.log('requested active player');
-  Player.findOne({identityProviderId:req.user.sub}, function(err, player) {
-    if (err){
+  Player.findOne({ identityProviderId: req.user.sub }, function (err, player) {
+    if (err) {
       res.send(err);
     }
-    if (player){
-      console.log(player)
-      res.setHeader('Content-Type', 'application/json')
+    if (player) {
       res.json(player);
     }
     else {
       // create the player
-      var nuberOfPlayers = Player.count;
-      if (nuberOfPlayers+1%8 === 1){
-        
-      }
+      var nuberOfPlayers = Player.count();
       var new_player = new Player({
-        identityProviderId:req.user.sub,
+        identityProviderId: req.user.sub,
         email: req.user.email,
-        position:{
-          x: 8000,
-          y: 8000
-        },
-        story:{
-          step:0
+        position: startingPosition.generateStartposition(nuberOfPlayers),
+        story: {
+          step: 0
         }
       });
-      new_player.save(function(err, player) {
+      new_player.save(function (err, player) {
         if (err) {
           console.log(err)
           res.send(err);
         }
-        res.setHeader('Content-Type', 'application/json')
-        res.json(player);
+        else
+          res.json(player);
       });
     }
   });
 };
 
-exports.update_a_player = async function(req, res) {
+exports.update_a_player = function (req, res) {
   const player = inputMappers.mapPlayer(req.body)
-  Player.findOneAndUpdate({_id:req.params.playerId}, player, {new: true}, function(err, player) {
+  Player.findOneAndUpdate({ _id: req.params.playerId }, player, { new: true }, function (err, player) {
     if (err)
       res.send(err);
-    res.setHeader('Content-Type', 'application/json')
-    res.json(player);
+    else
+      res.json(player);
   });
 };
 
-exports.update_players = async function(req, res) {
+exports.update_players = function (req, res) {
   req.body.forEach(item => {
     const player = inputMappers.mapPlayer(item)
-    Player.findOneAndUpdate({_id:player._id}, player, {new: true}, function(err, player) {
+    Player.findOneAndUpdate({ _id: player._id }, player, { new: true }, function (err, player) {
       if (err)
         res.send(err);
-      res.setHeader('Content-Type', 'application/json')
-      res.json(player);
     });
   });
+  res.json({ message: 'Players successfully updated' });
 };
 
 // Player.remove({}).exec(function(){});
-exports.delete_a_player = function(req, res) {
+exports.delete_a_player = function (req, res) {
   Player.remove({
     _id: req.params.playerId
-  }, function(err, player) {
+  }, function (err, player) {
     if (err)
-      res.send(err);
-    res.setHeader('Content-Type', 'application/json')
-    res.json({ message: 'Player successfully deleted' });
+      res.send();
+    else
+      res.json({ message: 'Player successfully deleted' });
   });
 };
 
+
+/***/ }),
+
+/***/ "./api/helpers/startingPosition.js":
+/*!*****************************************!*\
+  !*** ./api/helpers/startingPosition.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var playerSpacing = 8000;
+
+var calcRingCord = (itemIndex, ringIndex) => {
+  var i = ringIndex
+  var r = itemIndex / (2 * i);
+  r = Math.floor(r) % 2 === 1 ? -1 * (r - Math.floor(r)) : r - Math.floor(r);
+  if (r > 0.5) r = 1 - r;
+  if (r < - 0.5) r = -1 - r;
+  r = Math.round(r * (2 * i));
+  return (r)
+}
+
+exports.generateStartposition = (playerIndex) => {
+  console.log('playerIndex = ' + playerIndex)
+  var n = playerIndex;
+  if (n === 0) return ({ x: 0, y: 0 })
+  var i = 1
+  while (n > 4 * i) {
+    n = n - 4 * i
+    i++;
+  }
+  var x = calcRingCord(n, i) * playerSpacing
+  var y = calcRingCord(n + i, i) * playerSpacing
+  return ({ x, y })
+}
 
 /***/ }),
 
@@ -340,7 +363,7 @@ const jwtCheck = jwt({
   issuer: "https://project-helios.eu.auth0.com/",
   algorithms: ['RS256']
 });
-console.log("mongodb+srv://Bram_69:el2cIflH6wSoi7CD@heliosusers-7l1bc.mongodb.net/test?retryWrites=true&w=majority");
+
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb+srv://Bram_69:el2cIflH6wSoi7CD@heliosusers-7l1bc.mongodb.net/test?retryWrites=true&w=majority");
 
@@ -369,6 +392,7 @@ app.use(function(req, res, next) {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Referer, User-Agent');
+  res.setHeader('Content-Type', 'application/json')
   next();
 });
 app.options('*', cors())

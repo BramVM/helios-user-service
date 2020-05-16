@@ -21,7 +21,7 @@ const jwtCheck = jwt({
   issuer: process.env.ISSUER,
   algorithms: ['RS256']
 });
-console.log(process.env.CONNECTIONSTRING);
+
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.CONNECTIONSTRING);
 
@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Referer, User-Agent');
+  res.setHeader('Content-Type', 'application/json')
   next();
 });
 app.options('*', cors())
