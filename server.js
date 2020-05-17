@@ -21,32 +21,36 @@ const jwtCheck = jwt({
   issuer: process.env.ISSUER,
   algorithms: ['RS256']
 });
-
+const mongoConnectionOptions ={
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.CONNECTIONSTRING);
+mongoose.connect(process.env.CONNECTIONSTRING, mongoConnectionOptions);
 
 
 const routes = require('./api/routes/playerRoutes');
 
-const whitelist = [
-  'http://localhost:3000',
-  'http://projecthelios.azurewebsites.net',
-  'http://bram-lab.com'
-];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://projecthelios.azurewebsites.net",
+  "http://bram-lab.com",
+  "https://projecthelios.azurewebsites.net",
+  "https://bram-lab.com"
+]
+
 const corsOptions = {
   origin: function(origin, callback){
-      console.log(origin)
-      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      const originIsWhitelisted = allowedOrigins.indexOf(origin) !== -1;
       callback(null, originIsWhitelisted);
   },
   credentials: true,
   enablePreflight: true
 };
 app.use(function(req, res, next) {
-  let allowedOrigins = ["http://localhost:3000", "http://projecthelios.azurewebsites.net", "http://bram-lab.com", "https://projecthelios.azurewebsites.net", "https://bram-lab.com"]
   let origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
-      res.setHeader("Access-Control-Allow-Origin", origin); // restrict it to the required domain
+      res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,PATCH,DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Referer, User-Agent');
@@ -65,4 +69,4 @@ app.use(function(req, res) {
 
 app.listen(port);
 
-console.log('RESTful API server started on: ' + port);
+console.log('RESTful API server for player-service started on: ' + port);

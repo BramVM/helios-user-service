@@ -26,8 +26,7 @@ exports.create_a_player = function (req, res) {
 };
 
 exports.read_active_player = function (req, res) {
-  console.log('requested active player');
-  Player.findOne({ identityProviderId: req.user.sub }, function (err, player) {
+  Player.findOne({ identityProviderId: req.user.sub }, async function (err, player) {
     if (err) {
       res.send(err);
     }
@@ -36,10 +35,9 @@ exports.read_active_player = function (req, res) {
     }
     else {
       // create the player
-      var nuberOfPlayers = Player.count();
+      var nuberOfPlayers = await Player.countDocuments();
       var new_player = new Player({
         identityProviderId: req.user.sub,
-        email: req.user.email,
         position: startingPosition.generateStartposition(nuberOfPlayers),
         story: {
           step: 0
