@@ -9,7 +9,6 @@ const express = require('express'),
   Player = require('./api/models/playerModel'),
   bodyParser = require('body-parser');
 
-
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
     cache: true,

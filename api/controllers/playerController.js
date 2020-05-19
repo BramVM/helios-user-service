@@ -1,5 +1,7 @@
 'use strict';
-const inputMappers = require('../mappers/inputMappers');
+const inputMappers = require('../mappers/inputMappers')
+const stationServiceApi = require('../../out-api/station-service-api')
+const StationTileTypes = require('../../constants/index')
 const mongoose = require('mongoose'),
   Player = mongoose.model('Players');
 
@@ -25,6 +27,10 @@ exports.create_a_player = function (req, res) {
   });
 };
 
+var randomOption = function (options) {
+  return options[Math.round(Math.random() * (options.length - 1))]
+}
+
 exports.read_active_player = function (req, res) {
   Player.findOne({ identityProviderId: req.user.sub }, async function (err, player) {
     if (err) {
@@ -36,13 +42,40 @@ exports.read_active_player = function (req, res) {
     else {
       // create the player
       var nuberOfPlayers = await Player.countDocuments();
+      var position = startingPosition.generateStartposition(nuberOfPlayers);
       var new_player = new Player({
         identityProviderId: req.user.sub,
-        position: startingPosition.generateStartposition(nuberOfPlayers),
+        position,
         story: {
           step: 0
         }
       });
+      await stationServiceApi.getToken().then(token => {
+        const tilePos = randomOption([[1,0],[-1,0],[0,1],[-1,1],[-1,-1],[0,-1]]);
+        const stationPos = randomOption([
+          { x: position.x - 2000, y: position.y },
+          { x: position.x + 2000, y: position.y },
+          { x: position.x, y: position.y + 2000 },
+          { x: position.x, y: position.y - 2000 }
+        ]);
+        stationServiceApi.createStation({
+          playerId: new_player._id,
+          position: stationPos,
+          tiles: [{
+            x: 0,
+            y: 0,
+            type: 'ACCESS',
+            broken: false
+          },
+          {
+            x: tilePos[0],
+            y: tilePos[1],
+            type: 'POWER GENERATOR',
+            broken: true
+          }]
+        }).then(station => console.log(station))
+      });
+
       new_player.save(function (err, player) {
         if (err) {
           console.log(err)
