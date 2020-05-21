@@ -41,6 +41,7 @@ if(process && process.env){
       STATION_API_URL: JSON.stringify(process.env.STATION_API_URL),
       CLIENT_SECRET: JSON.stringify(process.env.CLIENT_SECRET),
       CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
+      STATION_API_AUDIENCE: JSON.stringify(process.env.STATION_API_AUDIENCE)
     }
   }))
 }
