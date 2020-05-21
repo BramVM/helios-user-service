@@ -37,7 +37,10 @@ if(process && process.env){
       PORT: JSON.stringify(process.env.PORT),
       AUDIENCE: JSON.stringify(process.env.AUDIENCE),
       ISSUER: JSON.stringify(process.env.ISSUER),
-      CONNECTIONSTRING: JSON.stringify(process.env.CONNECTIONSTRING)
+      CONNECTIONSTRING: JSON.stringify(process.env.CONNECTIONSTRING),
+      STATION_API_URL: JSON.stringify(process.env.STATION_API_URL),
+      CLIENT_SECRET: JSON.stringify(process.env.CLIENT_SECRET),
+      CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
     }
   }))
 }
