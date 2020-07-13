@@ -37,6 +37,7 @@ exports.read_active_player = function (req, res) {
       res.send(err);
     }
     if (player) {
+      console.log(player)
       res.json(player);
     }
     else {
